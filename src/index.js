@@ -2,28 +2,33 @@ import { Notify } from 'notiflix';
 import { api, getImages } from './api';
 import { clearGallery, drawAllPhoto, renderAllPhoto } from './helpers';
 import refs from './refs';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
+const lightbox = new SimpleLightbox('.gallery a');
 let page = 1;
 
 refs.formEl.addEventListener('submit', async e => {
   e.preventDefault();
   page = 1;
 
-  const searchQuery = refs.formEl.elements.searchQuery.value || '';
-  const { data } = await getImages(searchQuery);
-  const lastPage = Math.ceil(data.totalHits / api.defaults.params.per_page);
+  const { hits, lastPage, totalHits } = await getImages(
+    refs.formEl.elements.searchQuery.value,
+    page,
+  );
 
   refs.loadMoreBtn.style.display = 'none';
   clearGallery();
 
-  if (data.totalHits === 0) {
+  if (totalHits === 0) {
     Notify.failure('Sorry, there are no images matching your search query. Please try again.');
     return;
   }
-  Notify.success(`"Hooray! We found ${data.totalHits} images."`);
+  Notify.success(`"Hooray! We found ${totalHits} images."`);
 
   if (page <= lastPage) {
-    renderAllPhoto(drawAllPhoto(data.hits));
+    renderAllPhoto(drawAllPhoto(hits));
+    lightbox.refresh();
   }
   if (page < lastPage) {
     refs.loadMoreBtn.style.display = 'block';
@@ -33,17 +38,18 @@ refs.formEl.addEventListener('submit', async e => {
 refs.loadMoreBtn.addEventListener('click', async e => {
   e.preventDefault();
   page++;
-  const searchQuery = refs.formEl.elements.searchQuery.value || '';
-  const { data } = await getImages(searchQuery, page);
-  const lastPage = Math.ceil(data.totalHits / api.defaults.params.per_page);
+
+  const { hits, lastPage } = await getImages(refs.formEl.elements.searchQuery.value, page);
 
   if (page <= lastPage) {
-    renderAllPhoto(drawAllPhoto(data.hits));
+    renderAllPhoto(drawAllPhoto(hits));
+    lightbox.refresh();
   }
   if (page < lastPage) {
     refs.loadMoreBtn.style.display = 'block';
-    return;
   }
-  refs.loadMoreBtn.style.display = 'none';
-  Notify.failure("We're sorry, but you've reached the end of search results.");
+  if (page === lastPage) {
+    refs.loadMoreBtn.style.display = 'none';
+    Notify.failure("We're sorry, but you've reached the end of search results.");
+  }
 });

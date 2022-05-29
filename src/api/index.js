@@ -2,21 +2,22 @@ import axios from 'axios';
 
 const API_KEY = '27666990-12b4bba2fe6e2b052765abd44';
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: 'https://pixabay.com/api',
   params: {
     key: API_KEY,
     iamge_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
+    per_page: 40,
   },
 });
 
-export const getImages = async query => {
+export const getImages = async (q, page = 1) => {
   //   const imageObj =
   //   console.log('image Object', imageObj);
   try {
-    return await api.get('/', { params: { q: query } });
+    return await api.get('/', { params: { q, page } });
   } catch (err) {
     throw new Error(err);
   }

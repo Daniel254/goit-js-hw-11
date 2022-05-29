@@ -39,3 +39,7 @@ export const drawAllPhoto = cards => {
 export const renderAllPhoto = htmlString => {
   refs.galleryEl.insertAdjacentHTML('beforeend', htmlString);
 };
+
+export const clearGallery = () => {
+  refs.galleryEl.innerHTML = '';
+};

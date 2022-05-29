@@ -8,9 +8,11 @@ const drawPhotoCard = card => {
   // +views - количество просмотров.
   // +comments - количество комментариев.
   // +downloads - количество загрузок.
-  const { webformatURL, tags, likes, views, comments, downloads } = card;
+  const { largeImageURL, webformatURL, tags, likes, views, comments, downloads } = card;
   return `<div class="photo-card">
-    <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+    <a href="${largeImageURL}">
+      <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+    </a>
     <div class="info">
       <p class="info-item">
         <b>Likes</b><br>${likes}

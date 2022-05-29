@@ -17,7 +17,9 @@ export const getImages = async (q, page = 1) => {
   //   const imageObj =
   //   console.log('image Object', imageObj);
   try {
-    return await api.get('/', { params: { q, page } });
+    const { data } = await api.get('/', { params: { q, page } });
+    const lastPage = Math.ceil(data.totalHits / api.defaults.params.per_page);
+    return { hits: data.hits, totalHits: data.totalHits, lastPage };
   } catch (err) {
     throw new Error(err);
   }

@@ -45,3 +45,12 @@ export const renderAllPhoto = htmlString => {
 export const clearGallery = () => {
   refs.galleryEl.innerHTML = '';
 };
+
+export const scrolldownLoadMore = () => {
+  const { height: cardHeight } = refs.galleryEl.firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+};

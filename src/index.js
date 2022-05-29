@@ -1,6 +1,6 @@
 import { Notify } from 'notiflix';
-import { api, getImages } from './api';
-import { clearGallery, drawAllPhoto, renderAllPhoto } from './helpers';
+import { getImages } from './api';
+import { clearGallery, drawAllPhoto, renderAllPhoto, scrolldownLoadMore } from './helpers';
 import refs from './refs';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
@@ -52,4 +52,5 @@ refs.loadMoreBtn.addEventListener('click', async e => {
     refs.loadMoreBtn.style.display = 'none';
     Notify.failure("We're sorry, but you've reached the end of search results.");
   }
+  scrolldownLoadMore();
 });

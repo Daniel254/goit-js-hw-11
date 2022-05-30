@@ -7,15 +7,19 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const lightbox = new SimpleLightbox('.gallery a');
 let page = 1;
+let searchQuery;
 
 refs.formEl.addEventListener('submit', async e => {
   e.preventDefault();
+  searchQuery = refs.formEl.elements.searchQuery.value =
+    refs.formEl.elements.searchQuery.value.trim();
+  if (!searchQuery) {
+    refs.formEl.reportValidity();
+    return;
+  }
   page = 1;
 
-  const { hits, lastPage, totalHits } = await getImages(
-    refs.formEl.elements.searchQuery.value,
-    page,
-  );
+  const { hits, lastPage, totalHits } = await getImages(searchQuery, page);
 
   refs.loadMoreBtn.style.display = 'none';
   clearGallery();
@@ -38,8 +42,7 @@ refs.formEl.addEventListener('submit', async e => {
 refs.loadMoreBtn.addEventListener('click', async e => {
   e.preventDefault();
   page++;
-
-  const { hits, lastPage } = await getImages(refs.formEl.elements.searchQuery.value, page);
+  const { hits, lastPage } = await getImages(searchQuery, page);
 
   if (page <= lastPage) {
     renderAllPhoto(drawAllPhoto(hits));
